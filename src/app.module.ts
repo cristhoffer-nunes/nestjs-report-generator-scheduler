@@ -1,10 +1,16 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { OrdersModule } from './occ/orders/orders.module';
+import { OrdersModule } from './modules/orders.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
-  imports: [OrdersModule],
+  imports: [
+    MongooseModule.forRoot(process.env.MONGODB_URL),
+    ScheduleModule.forRoot(),
+    OrdersModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
