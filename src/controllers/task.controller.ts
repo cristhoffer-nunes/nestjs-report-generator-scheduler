@@ -69,7 +69,6 @@ export class TaskController {
     this.logger.log(`TASK [SCHEDULER REPORT] - COMPLETED`);
   }
 
-  // @Cron('25 18 * * *')
   async insertOrders() {
     this.logger.log('TASK [INSERT ORDERS] - STARTING...');
     let offset: number = 0;
@@ -107,6 +106,7 @@ export class TaskController {
     this.logger.log('TASK [INSERT ORDERS] - COMPLETED');
   }
 
+  @Get('insertCurrentOrders')
   @Cron('0 4 * * *')
   async insertCurrentOrders() {
     this.logger.log('TASK [INSERT CURRENT ORDERS] - STARTING...');
@@ -146,16 +146,18 @@ export class TaskController {
               offset = offset + 250;
             } catch (error) {
               this.logger.error(
-                `TASK [INSER CURRENT ORDERS] - INSERT ORDER ERROR: ${error}`,
+                `TASK [INSERT CURRENT ORDERS] - INSERT ORDER ERROR: ${error}`,
               );
             }
           });
         } catch (error) {
           this.logger.error(
-            `TASK [INSER CURRENT ORDERS] - GET ORDERS ERROR MESSAGE: ${error}`,
+            `TASK [INSERT CURRENT ORDERS] - GET ORDERS ERROR MESSAGE: ${error}`,
           );
         }
       }
+
+      this.logger.log('TASK [INSERT CURRENT ORDERS] - COMPLETED...');
     }
   }
 }
