@@ -44,8 +44,8 @@ export class TasksService {
       from: this.configService.get('MAIL_FROM'),
       to: this.configService.get('MAIL_TO'),
       subject: `Suporte | Leo Madeiras | Relatório geral de cupons - ${this.date.currentDay}`,
-      html: `<p> Bom dia prezados, </p> Segue em anexo relatório geral de cupons para ser encaminhado através do chamado 13133362. </p> <p> Atenciosamente, </p>`,
-      text: `Bom dia prezados, Segue em anexo relatório geral de cupons para ser encaminhado através do chamado 13133362. Atenciosamente,`,
+      html: `<p> Bom dia prezados, </p> Segue em anexo relatório geral de cupons referente ao chamado #13133362. </p> <p> Atenciosamente, </p>`,
+      text: `Bom dia prezados, </p> Segue em anexo relatório geral de cupons referente ao chamado #13133362. Atenciosamente,`,
       attachments: [
         {
           filename: `relatorio-geral-de-cupons-${this.date.currentDay}.xlsx`,
