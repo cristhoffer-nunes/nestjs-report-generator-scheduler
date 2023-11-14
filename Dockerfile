@@ -1,0 +1,25 @@
+FROM node
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN yarn install
+
+COPY . .
+
+EXPOSE ${PORT}
+
+ENV MONGODB_URL=${MONGODB_URL} \
+    MONGODB_COLLECTION=${MONGODB_COLLECTION} \
+    OCC_URL=${OCC_URL} \
+    OCC_APP_KEY=${OCC_APP_KEY} \
+    PORT=3000 \
+    MAIL_HOST=${MAIL_HOST} \
+    MAIL_PORT=${MAIL_PORT} \
+    MAIL_USER=${MAIL_USER} \
+    MAIL_PASS=${MAIL_PASS} \
+    MAIL_FROM=${MAIL_FROM} \
+    MAIL_TO=${MAIL_TO}
+
+CMD ["yarn", "start:prod"]
