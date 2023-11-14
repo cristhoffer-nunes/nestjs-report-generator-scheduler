@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
 import { DateInformations } from '../utils/date-informations.utils';
@@ -7,6 +7,8 @@ import { IDateInformations } from 'src/interfaces/date-information.interface';
 
 @Injectable()
 export class OracleService {
+  private readonly logger: Logger = new Logger(OracleService.name);
+
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
@@ -79,6 +81,9 @@ export class OracleService {
   }
 
   async getCurrentOrders(offset: number = 0) {
+    this.logger.log(
+      `[GET CURRENT ORDERS] - /ccadmin/v1/orders?queryFormat=SCIM&fields=submittedDate,id,commerceItems.priceInfo.orderDiscountInfos,Pedido_SAP,client_document,priceInfo&q=submittedDate gt "${this.date.lastDay}T03:00:00.000Z" and submittedDate lt "${this.date.currentDay}T03:00:00.000Z"&offset=${offset}`,
+    );
     const response = await lastValueFrom(
       this.httpService.get(
         `${this.url}/ccadmin/v1/orders?queryFormat=SCIM&fields=submittedDate,id,commerceItems.priceInfo.orderDiscountInfos,Pedido_SAP,client_document,priceInfo&q=submittedDate gt "${this.date.lastDay}T03:00:00.000Z" and submittedDate lt "${this.date.currentDay}T03:00:00.000Z"&offset=${offset}`,
