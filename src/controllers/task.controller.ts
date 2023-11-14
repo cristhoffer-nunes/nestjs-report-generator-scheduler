@@ -20,7 +20,7 @@ export class TaskController {
     this.logger = new Logger(TaskController.name);
   }
 
-  @Get('scheduleReport')
+  @Get('report')
   @Cron('0 6 * * *')
   async schedulerReport() {
     this.logger.log('TASK [SCHEDULER REPORT] - STARTING...');
