@@ -129,11 +129,10 @@ export class TaskController {
           executions - 1
         } - TOTAL RESULTS: ${totalResults}`,
       );
-
       for (let i = 0; i < executions; i++) {
         try {
           this.logger.log(
-            `TASK [INSERT CURRENT ORDERS] - EXECUTION: ${i} - GET ORDERS...`,
+            `TASK [INSERT CURRENT ORDERS] - EXECUTION: ${i} - OFFSET: ${offset} GET ORDERS...`,
           );
           const { items } = await this.oracleService.getCurrentOrders(offset);
           items.forEach(async (order) => {
@@ -143,13 +142,14 @@ export class TaskController {
               this.logger.log(
                 `TASK [INSERT CURRENT ORDERS] - ORDER INSERTED...`,
               );
-              offset = offset + 250;
             } catch (error) {
               this.logger.error(
                 `TASK [INSERT CURRENT ORDERS] - INSERT ORDER ERROR: ${error}`,
               );
             }
           });
+
+          offset = offset + 250;
         } catch (error) {
           this.logger.error(
             `TASK [INSERT CURRENT ORDERS] - GET ORDERS ERROR MESSAGE: ${error}`,
