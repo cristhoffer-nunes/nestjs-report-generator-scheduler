@@ -20,6 +20,10 @@ ENV MONGODB_URL=${MONGODB_URL} \
     MAIL_USER=${MAIL_USER} \
     MAIL_PASS=${MAIL_PASS} \
     MAIL_FROM=${MAIL_FROM} \
-    MAIL_TO=${MAIL_TO}
+    MAIL_TO=${MAIL_TO} \
+    CRON_CURRENT_ORDERS=${CRON_CURRENT_ORDERS} \
+    CRON_REPORT=${CRON_REPORT}
 
+RUN yarn build
+   
 CMD ["yarn", "start:prod"]
