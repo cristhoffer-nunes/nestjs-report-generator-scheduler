@@ -6,6 +6,7 @@ import { OracleService } from 'src/services/oracle.service';
 import { OrdersService } from 'src/services/orders.service';
 import { TasksService } from 'src/services/tasks.service';
 import { TasksExceptionFilter } from 'src/utils/task-expection-filter.utils';
+import envVariablesConfig from 'src/config/env-variables.config';
 
 @Controller('tasks')
 @UseFilters(TasksExceptionFilter)
@@ -21,7 +22,7 @@ export class TaskController {
   }
 
   @Get('report')
-  @Cron('0 6 * * *')
+  @Cron(envVariablesConfig.CRON_REPORT)
   async schedulerReport() {
     this.logger.log('TASK [SCHEDULER REPORT] - STARTING...');
     const orders = await this.ordersService.findAll();
@@ -107,7 +108,7 @@ export class TaskController {
   }
 
   @Get('insertCurrentOrders')
-  @Cron('0 4 * * *')
+  @Cron(envVariablesConfig.CRON_CURRENT_ORDERS)
   async insertCurrentOrders() {
     this.logger.log('TASK [INSERT CURRENT ORDERS] - STARTING...');
     let offset: number = 0;
