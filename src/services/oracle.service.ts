@@ -2,7 +2,6 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
-import { DateInformations } from '../utils/date-informations.utils';
 import { IDateInformations } from 'src/interfaces/date-information.interface';
 
 @Injectable()
@@ -15,7 +14,6 @@ export class OracleService {
   ) {
     this.url = this.configService.get('OCC_URL');
     this.appKey = this.configService.get('OCC_APP_KEY');
-    this.date = DateInformations();
   }
 
   private occToken = {
@@ -28,7 +26,6 @@ export class OracleService {
 
   private url: string;
   private appKey: string;
-  private date: IDateInformations;
 
   async getCurrentToken(): Promise<string> {
     if (
@@ -65,10 +62,29 @@ export class OracleService {
     }
   }
 
+  DateInformations(): IDateInformations {
+    const currentDay = new Date();
+    console.log(currentDay);
+    const lastDay = new Date();
+
+    lastDay.setDate(currentDay.getDate() - 1);
+
+    const currentDayFormatted = currentDay.toISOString().slice(0, 10);
+    const lastDayFormatted = lastDay.toISOString().slice(0, 10);
+
+    const date: IDateInformations = {
+      currentDay: currentDayFormatted,
+      lastDay: lastDayFormatted,
+    };
+
+    return date;
+  }
+
   async getOrders(offset: number = 0) {
+    const date = this.DateInformations();
     const response = await lastValueFrom(
       this.httpService.get(
-        `${this.url}/ccadmin/v1/orders?queryFormat=SCIM&fields=submittedDate,id,commerceItems.priceInfo.orderDiscountInfos,Pedido_SAP,client_document,priceInfo&q=submittedDate gt "2023-01-01T03:00:00.000Z" and submittedDate lt "${this.date.currentDay}T03:00:00.000Z"&offset=${offset}`,
+        `${this.url}/ccadmin/v1/orders?queryFormat=SCIM&fields=submittedDate,id,commerceItems.priceInfo.orderDiscountInfos,Pedido_SAP,client_document,priceInfo&q=submittedDate gt "2023-01-01T03:00:00.000Z" and submittedDate lt "${date.currentDay}T03:00:00.000Z"&offset=${offset}`,
         {
           headers: {
             Authorization: `Bearer ${await this.getCurrentToken()}`,
@@ -81,12 +97,13 @@ export class OracleService {
   }
 
   async getCurrentOrders(offset: number = 0) {
+    const date = this.DateInformations();
     this.logger.log(
-      `[GET CURRENT ORDERS] - /ccadmin/v1/orders?queryFormat=SCIM&fields=submittedDate,id,commerceItems.priceInfo.orderDiscountInfos,Pedido_SAP,client_document,priceInfo&q=submittedDate gt "${this.date.lastDay}T03:00:00.000Z" and submittedDate lt "${this.date.currentDay}T03:00:00.000Z"&offset=${offset}`,
+      `[GET CURRENT ORDERS] - /ccadmin/v1/orders?queryFormat=SCIM&fields=submittedDate,id,commerceItems.priceInfo.orderDiscountInfos,Pedido_SAP,client_document,priceInfo&q=submittedDate gt "${date.lastDay}T03:00:00.000Z" and submittedDate lt "${date.currentDay}T03:00:00.000Z"&offset=${offset}`,
     );
     const response = await lastValueFrom(
       this.httpService.get(
-        `${this.url}/ccadmin/v1/orders?queryFormat=SCIM&fields=submittedDate,id,commerceItems.priceInfo.orderDiscountInfos,Pedido_SAP,client_document,priceInfo&q=submittedDate gt "${this.date.lastDay}T03:00:00.000Z" and submittedDate lt "${this.date.currentDay}T03:00:00.000Z"&offset=${offset}`,
+        `${this.url}/ccadmin/v1/orders?queryFormat=SCIM&fields=submittedDate,id,commerceItems.priceInfo.orderDiscountInfos,Pedido_SAP,client_document,priceInfo&q=submittedDate gt "${date.lastDay}T03:00:00.000Z" and submittedDate lt "${date.currentDay}T03:00:00.000Z"&offset=${offset}`,
         {
           headers: {
             Authorization: `Bearer ${await this.getCurrentToken()}`,
