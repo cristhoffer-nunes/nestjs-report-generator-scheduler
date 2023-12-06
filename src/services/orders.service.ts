@@ -27,8 +27,24 @@ export class OrdersService {
     return await this.orderModel.insertMany(createOrderDto);
   }
 
-  findAll() {
+  async findAll() {
     return this.orderModel.find();
+  }
+
+  async findByPagination(page: number = 1, limit: number = 250) {
+    const skip = (page - 1) * limit;
+    const totalCount = await this.orderModel.countDocuments();
+    const totalPages = Math.ceil(totalCount / limit);
+
+    const orders = await this.orderModel.find().skip(skip).limit(limit).exec();
+
+    return {
+      currentPage: page,
+      totalPages,
+      totalResults: totalCount,
+      limit,
+      orders,
+    };
   }
 
   async deleteMany() {
